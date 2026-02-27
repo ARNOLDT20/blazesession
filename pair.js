@@ -3,13 +3,9 @@ const express = require('express');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
-const {
-    default: makeWASocket,
-    useMultiFileAuthState,
-    delay,
-    Browsers,
-    makeCacheableSignalKeyStore
-} = require('@whiskeysockets/baileys');
+// dynamically load baileys when needed (ESM-only module)
+let makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore; // will be assigned before use
+
 
 const { upload } = require('./mega');
 
@@ -23,6 +19,15 @@ router.get('/', async (req, res) => {
     let num = req.query.number;
 
     async function SILA_MD_PAIR_CODE() {
+        // load baileys modules lazily to avoid ESM import errors
+        if (!makeWASocket) {
+            const baileys = await import('@whiskeysockets/baileys');
+            makeWASocket = baileys.default;
+            useMultiFileAuthState = baileys.useMultiFileAuthState;
+            delay = baileys.delay;
+            Browsers = baileys.Browsers;
+            makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;
+        }
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
         try {

@@ -4,13 +4,9 @@ const QRCode = require('qrcode');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
-const {
-    default: makeWASocket,
-    useMultiFileAuthState,
-    delay,
-    makeCacheableSignalKeyStore,
-    Browsers
-} = require("@whiskeysockets/baileys");
+// load baileys dynamically since it's an ESM module
+let makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers;
+
 const { upload } = require('./mega');
 
 function removeFile(FilePath) {
@@ -23,6 +19,15 @@ router.get('/', async (req, res) => {
     const startTime = Date.now();
 
     async function SILA_MD_PAIR_CODE() {
+        // ensure baileys lib is imported
+        if (!makeWASocket) {
+            const baileys = await import('@whiskeysockets/baileys');
+            makeWASocket = baileys.default;
+            useMultiFileAuthState = baileys.useMultiFileAuthState;
+            delay = baileys.delay;
+            makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;
+            Browsers = baileys.Browsers;
+        }
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
         try {
