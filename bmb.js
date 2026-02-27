@@ -8,20 +8,20 @@ let server = require('./qr'),
 require('events').EventEmitter.defaultMaxListeners = 500;
 app.use('/server', server);
 app.use('/code', code);
-app.use('/pair',async (req, res, next) => {
-res.sendFile(__path + '/pair.html')
+app.use('/pair', async (req, res, next) => {
+    res.sendFile(__path + '/pair.html')
 })
-app.use('/qr',async (req, res, next) => {
-res.sendFile(__path + '/qr.html')
+app.use('/qr', async (req, res, next) => {
+    res.sendFile(__path + '/qr.html')
 })
-app.use('/',async (req, res, next) => {
-res.sendFile(__path + '/main.html')
+app.use('/', async (req, res, next) => {
+    res.sendFile(__path + '/main.html')
 })
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.listen(PORT, () => {
     console.log(`
-Don't Forget To Give Star SILA-MD
+Don't Forget To Give Star ARNOLDT20/Viper2
 
  Server running on http://localhost:` + PORT)
 })

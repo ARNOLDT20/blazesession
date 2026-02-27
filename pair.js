@@ -3,12 +3,12 @@ const express = require('express');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
-const { 
-    default: makeWASocket, 
-    useMultiFileAuthState, 
-    delay, 
-    Browsers, 
-    makeCacheableSignalKeyStore 
+const {
+    default: makeWASocket,
+    useMultiFileAuthState,
+    delay,
+    Browsers,
+    makeCacheableSignalKeyStore
 } = require('@whiskeysockets/baileys');
 
 const { upload } = require('./mega');
@@ -24,11 +24,11 @@ router.get('/', async (req, res) => {
 
     async function SILA_MD_PAIR_CODE() {
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
-        
+
         try {
             const items = ["Safari", "Chrome", "Firefox"];
             const randomItem = items[Math.floor(Math.random() * items.length)];
-            
+
             let sock = makeWASocket({
                 auth: {
                     creds: state.creds,
@@ -40,16 +40,16 @@ router.get('/', async (req, res) => {
                 syncFullHistory: false,
                 browser: Browsers.macOS(randomItem)
             });
-            
+
             if (!sock.authState.creds.registered) {
                 await delay(1500);
                 num = num.replace(/[^0-9]/g, '');
                 const code = await sock.requestPairingCode(num);
                 if (!res.headersSent) await res.send({ code });
             }
-            
+
             sock.ev.on('creds.update', saveCreds);
-            
+
             sock.ev.on("connection.update", async (s) => {
                 const { connection, lastDisconnect } = s;
 
@@ -66,18 +66,18 @@ router.get('/', async (req, res) => {
                         }
                         return silaID;
                     }
-                    
+
                     const silaID = generateSILA_ID();
 
                     try {
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let session_code = "sila~" + string_session;
-                        
+
                         let code = await sock.sendMessage(sock.user.id, { text: session_code });
-                        
+
                         // ===== Message with BOX =====
-                        let desc =`┏━❑ *SILA-MD SESSION* ✅
+                        let desc = `┏━❑ *SILA-MD SESSION* ✅
 ┏━❑ *SAFETY RULES* ━━━━━━━━━
 ┃ 🔹 *Session ID:* Sent above.
 ┃ 🔹 *Warning:* Do not share this code!.
@@ -88,18 +88,18 @@ router.get('/', async (req, res) => {
 ┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02
 ┗━━━━━━━━━━━━━━━
 ┏━❑ *REPOSITORY* ━━━━━━━━━
-┃ 💻 Repository: https://github.com/Sila-Md/SILA-MD
+┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2
 ┃ 👉 Fork & contribute!
 ┗━━━━━━━━━━━━━━━
 
-> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐒𝐢𝐥𝐚 𝐓𝐞𝐜𝐡`;
+> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
                                 externalAdReply: {
-                                    title: 'SILA MD',
-                                    body: '© Sila Tech',
+                                    title: 'BLAZE MD',
+                                    body: '© Blaze Tech',
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
@@ -122,8 +122,8 @@ router.get('/', async (req, res) => {
 
                     } catch (e) {
                         let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
-                        
-                        let desc = `┏━❑ *SILA-MD SESSION* ⚠️
+
+                        let desc = `┏━❑ *BLAZE SESSION* ⚠️
 ┏━❑ *SAFETY RULES* ━━━━━━━━━
 ┃ 🔹 *Session ID:* Sent above.
 ┃ 🔹 *Error:* Session created with minor issues.
@@ -134,18 +134,18 @@ router.get('/', async (req, res) => {
 ┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02
 ┗━━━━━━━━━━━━━━━
 ┏━❑ *REPOSITORY* ━━━━━━━━━
-┃ 💻 Repository: https://github.com/Sila-Md/SILA-MD
+┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2
 ┃ 👉 Fork & contribute!
 ┗━━━━━━━━━━━━━━━
 
-> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐒𝐢𝐥𝐚 𝐓𝐞𝐜𝐡`;
+> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
                                 externalAdReply: {
-                                    title: 'SILA MD',
-                                    body: '© Sila Tech',
+                                    title: 'BLAZE MD',
+                                    body: '© Blaze Tech',
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
@@ -170,7 +170,7 @@ router.get('/', async (req, res) => {
                     await delay(10);
                     await sock.ws.close();
                     await removeFile('./temp/' + id);
-                    console.log(`👤 ${sock.user.id} 🔥 SILA-MD Session Connected ✅`);
+                    console.log(`👤 ${sock.user.id} 🔥 BLAZE SESSION Connected ✅`);
                     await delay(10);
                     process.exit();
 
@@ -179,9 +179,9 @@ router.get('/', async (req, res) => {
                     SILA_MD_PAIR_CODE();
                 }
             });
-            
+
         } catch (err) {
-            console.log("⚠️ SILA-MD Connection failed — Restarting service...");
+            console.log("⚠️ BLAZE SESSION Connection failed — Restarting service...");
             await removeFile('./temp/' + id);
             if (!res.headersSent) await res.send({ code: "❗ SILA-MD Service Unavailable" });
         }
