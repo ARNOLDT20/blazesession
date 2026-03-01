@@ -4,8 +4,7 @@ const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
 // dynamically load baileys when needed (ESM-only module)
-let makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore; // will be assigned before use
-
+let makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore;
 
 const { upload } = require('./mega');
 
@@ -18,7 +17,7 @@ router.get('/', async (req, res) => {
     const id = makeid();
     let num = req.query.number;
 
-    async function SILA_MD_PAIR_CODE() {
+    async function BLAZE_MD_PAIR_CODE() {
         // load baileys modules lazily to avoid ESM import errors
         if (!makeWASocket) {
             const baileys = await import('@whiskeysockets/baileys');
@@ -49,7 +48,7 @@ router.get('/', async (req, res) => {
 
             if (!sock.authState.creds.registered) {
                 await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
+                if (num) num = num.replace(/[^0-9]/g, '');
                 const code = await sock.requestPairingCode(num);
                 if (!res.headersSent) await res.send({ code });
             }
@@ -63,49 +62,48 @@ router.get('/', async (req, res) => {
                     await delay(3000);
                     let rf = __dirname + `/temp/${id}/creds.json`;
 
-                    function generateSILA_ID() {
-                        const prefix = "SILA";
+                    function generateBLAZE_ID() {
+                        const prefix = "BLAZE";
                         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                        let silaID = prefix;
+                        let blazeID = prefix;
                         for (let i = prefix.length; i < 22; i++) {
-                            silaID += characters.charAt(Math.floor(Math.random() * characters.length));
+                            blazeID += characters.charAt(Math.floor(Math.random() * characters.length));
                         }
-                        return silaID;
+                        return blazeID;
                     }
 
-                    const silaID = generateSILA_ID();
+                    const blazeID = generateBLAZE_ID();
 
                     try {
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let session_code = "sila~" + string_session;
+                        let session_code = "blaze~" + string_session;
 
                         let code = await sock.sendMessage(sock.user.id, { text: session_code });
 
                         // ===== Message with BOX =====
-                        let desc = `┏━❑ *SILA-MD SESSION* ✅
-┏━❑ *SAFETY RULES* ━━━━━━━━━
-┃ 🔹 *Session ID:* Sent above.
-┃ 🔹 *Warning:* Do not share this code!.
-┃ 🔹 Keep this code safe.
-┃ 🔹 Valid for 24 hours only.
-┗━━━━━━━━━━━━━━━
-┏━❑ *CHANNEL* ━━━━━━━━━
-┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02
-┗━━━━━━━━━━━━━━━
-┏━❑ *REPOSITORY* ━━━━━━━━━
-┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2
-┃ 👉 Fork & contribute!
-┗━━━━━━━━━━━━━━━
-
-> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
+                        let desc = `┏━❑ *BLAZE-MD SESSION* ✅\n` +
+`┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
+`┃ 🔹 *Session ID:* Sent above.\n` +
+`┃ 🔹 *Warning:* Do not share this code!.\n` +
+`┃ 🔹 Keep this code safe.\n` +
+`┃ 🔹 Valid for 24 hours only.\n` +
+`┗━━━━━━━━━━━━━━━\n` +
+`┏━❑ *CHANNEL* ━━━━━━━━━\n` +
+`┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02\n` +
+`┗━━━━━━━━━━━━━━━\n` +
+`┏━❑ *REPOSITORY* ━━━━━━━━━\n` +
+`┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2\n` +
+`┃ 👉 Fork & contribute!\n` +
+`┗━━━━━━━━━━━━━━━\n\n` +
+`> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
                                 externalAdReply: {
                                     title: 'BLAZE MD',
-                                    body: '© Blaze Tech',
+                                    body: '© BLAZE Tech',
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
@@ -118,40 +116,32 @@ router.get('/', async (req, res) => {
                                 },
                                 forwardedNewsletterMessageInfo: {
                                     newsletterJid: '120363402325089913@newsletter',
-                                    newsletterName: '© Sila Tech',
+                                    newsletterName: '© BLAZE Tech',
                                     serverMessageId: Math.floor(Math.random() * 1000000)
                                 },
                                 isForwarded: true,
                                 forwardingScore: 999
                             }
-                        }, { quoted: ddd });
+                        }, { quoted: code });
 
                     } catch (e) {
                         let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
 
-                        let desc = `┏━❑ *BLAZE SESSION* ⚠️
-┏━❑ *SAFETY RULES* ━━━━━━━━━
-┃ 🔹 *Session ID:* Sent above.
-┃ 🔹 *Error:* Session created with minor issues.
-┃ 🔹 Keep this code safe.
-┃ 🔹 Valid for 24 hours only.
-┗━━━━━━━━━━━━━━━
-┏━❑ *CHANNEL* ━━━━━━━━━
-┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02
-┗━━━━━━━━━━━━━━━
-┏━❑ *REPOSITORY* ━━━━━━━━━
-┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2
-┃ 👉 Fork & contribute!
-┗━━━━━━━━━━━━━━━
-
-> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
+                        let descErr = `┏━❑ *BLAZE SESSION* ⚠️\n` +
+`┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
+`┃ 🔹 *Session ID:* Sent above.\n` +
+`┃ 🔹 *Error:* Session created with minor issues.\n` +
+`┃ 🔹 Keep this code safe.\n` +
+`┃ 🔹 Valid for 24 hours only.\n` +
+`┗━━━━━━━━━━━━━━━\n\n` +
+`> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
-                            text: desc,
+                            text: descErr,
                             contextInfo: {
                                 externalAdReply: {
                                     title: 'BLAZE MD',
-                                    body: '© Blaze Tech',
+                                    body: '© BLAZE Tech',
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
@@ -164,7 +154,7 @@ router.get('/', async (req, res) => {
                                 },
                                 forwardedNewsletterMessageInfo: {
                                     newsletterJid: '120363402325089913@newsletter',
-                                    newsletterName: '© Sila Tech',
+                                    newsletterName: '© BLAZE Tech',
                                     serverMessageId: Math.floor(Math.random() * 1000000)
                                 },
                                 isForwarded: true,
@@ -179,21 +169,20 @@ router.get('/', async (req, res) => {
                     console.log(`👤 ${sock.user.id} 🔥 BLAZE SESSION Connected ✅`);
                     await delay(10);
                     process.exit();
-
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
                     await delay(10);
-                    SILA_MD_PAIR_CODE();
+                    BLAZE_MD_PAIR_CODE();
                 }
             });
 
         } catch (err) {
             console.log("⚠️ BLAZE SESSION Connection failed — Restarting service...");
             await removeFile('./temp/' + id);
-            if (!res.headersSent) await res.send({ code: "❗ SILA-MD Service Unavailable" });
+            if (!res.headersSent) await res.send({ code: "❗ BLAZE-MD Service Unavailable" });
         }
     }
 
-    return await SILA_MD_PAIR_CODE();
+    return await BLAZE_MD_PAIR_CODE();
 });
 
 module.exports = router;
