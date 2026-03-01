@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
         // ensure baileys lib is imported
         if (!makeWASocket) {
             const baileys = await import('@whiskeysockets/baileys');
-            makeWASocket = baileys.default;
+            // gifted-baileys exports functions as named exports rather than default
+            makeWASocket = baileys.makeWASocket;
             useMultiFileAuthState = baileys.useMultiFileAuthState;
             delay = baileys.delay;
             makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;

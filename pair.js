@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
         // load baileys modules lazily to avoid ESM import errors
         if (!makeWASocket) {
             const baileys = await import('@whiskeysockets/baileys');
-            makeWASocket = baileys.default;
+            // use named export since default is not a function
+            makeWASocket = baileys.makeWASocket;
             useMultiFileAuthState = baileys.useMultiFileAuthState;
             delay = baileys.delay;
             Browsers = baileys.Browsers;
