@@ -83,20 +83,20 @@ router.get('/', async (req, res) => {
 
                         // ===== Message with BOX =====
                         let desc = `┏━❑ *BLAZE-MD SESSION* ✅\n` +
-`┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
-`┃ 🔹 *Session ID:* Sent above.\n` +
-`┃ 🔹 *Warning:* Do not share this code!.\n` +
-`┃ 🔹 Keep this code safe.\n` +
-`┃ 🔹 Valid for 24 hours only.\n` +
-`┗━━━━━━━━━━━━━━━\n` +
-`┏━❑ *CHANNEL* ━━━━━━━━━\n` +
-`┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02\n` +
-`┗━━━━━━━━━━━━━━━\n` +
-`┏━❑ *REPOSITORY* ━━━━━━━━━\n` +
-`┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2\n` +
-`┃ 👉 Fork & contribute!\n` +
-`┗━━━━━━━━━━━━━━━\n\n` +
-`> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
+                            `┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
+                            `┃ 🔹 *Session ID:* Sent above.\n` +
+                            `┃ 🔹 *Warning:* Do not share this code!.\n` +
+                            `┃ 🔹 Keep this code safe.\n` +
+                            `┃ 🔹 Valid for 24 hours only.\n` +
+                            `┗━━━━━━━━━━━━━━━\n` +
+                            `┏━❑ *CHANNEL* ━━━━━━━━━\n` +
+                            `┃ 📢 Follow our channel: https://whatsapp.com/channel/0029VbAjawl9MF8vQQa0ZT32\n` +
+                            `┗━━━━━━━━━━━━━━━\n` +
+                            `┏━❑ *REPOSITORY* ━━━━━━━━━\n` +
+                            `┃ 💻 Repository: https://github.com/ARNOLDT20/Viper2\n` +
+                            `┃ 👉 Fork & contribute!\n` +
+                            `┗━━━━━━━━━━━━━━━\n\n` +
+                            `> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
-                                    sourceUrl: 'https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02',
+                                    sourceUrl: 'https://whatsapp.com/channel/0029VbAjawl9MF8vQQa0ZT32',
                                     mediaUrl: 'https://files.catbox.moe/36vahk.png',
                                     showAdAttribution: true,
                                     renderLargerThumbnail: false,
@@ -128,13 +128,13 @@ router.get('/', async (req, res) => {
                         let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
 
                         let descErr = `┏━❑ *BLAZE SESSION* ⚠️\n` +
-`┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
-`┃ 🔹 *Session ID:* Sent above.\n` +
-`┃ 🔹 *Error:* Session created with minor issues.\n` +
-`┃ 🔹 Keep this code safe.\n` +
-`┃ 🔹 Valid for 24 hours only.\n` +
-`┗━━━━━━━━━━━━━━━\n\n` +
-`> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
+                            `┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
+                            `┃ 🔹 *Session ID:* Sent above.\n` +
+                            `┃ 🔹 *Error:* Session created with minor issues.\n` +
+                            `┃ 🔹 Keep this code safe.\n` +
+                            `┃ 🔹 Valid for 24 hours only.\n` +
+                            `┗━━━━━━━━━━━━━━━\n\n` +
+                            `> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 BLAZE 𝐓𝐞𝐜𝐡`;
 
                         await sock.sendMessage(sock.user.id, {
                             text: descErr,
@@ -145,7 +145,7 @@ router.get('/', async (req, res) => {
                                     thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
-                                    sourceUrl: 'https://whatsapp.com/channel/0029VbBG4gfISTkCpKxyMH02',
+                                    sourceUrl: 'https://whatsapp.com/channel/0029VbAjawl9MF8vQQa0ZT32',
                                     mediaUrl: 'https://files.catbox.moe/36vahk.png',
                                     showAdAttribution: true,
                                     renderLargerThumbnail: false,
