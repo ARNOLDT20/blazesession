@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
                         try {
                             const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                             const string_session = mega_url.replace('https://mega.nz/file/', '');
-                            let session_code = "blaze~" + string_session;
+                            let session_code = "BLAZE~" + string_session;
 
                             let code = await sock.sendMessage(sock.user.id, { text: session_code });
 
