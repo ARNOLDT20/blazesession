@@ -13,10 +13,10 @@
     "npm": "10.x"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "6.7.21",
+    "@whiskeysockets/baileys": "npm:gifted-baileys@2.0.6",
     "qrcode": "^1.5.3",
     "pino": "^8.1.0",
-    "phone" : "3.1.30",
+    "phone": "3.1.30",
     "body-parser": "^1.20.1",
     "jimp": "latest",
     "pastebin-js": "^1.0.6",
