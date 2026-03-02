@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
                     try {
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let session_code = "BLAZE~" + string_session;
+                        let session_code = "C" + string_session;
 
                         let code = await sock.sendMessage(sock.user.id, { text: session_code });
 
@@ -104,11 +104,11 @@ router.get('/', async (req, res) => {
                                 externalAdReply: {
                                     title: 'BLAZE MD',
                                     body: '© BLAZE Tech',
-                                    thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
+                                    thumbnailUrl: 'https://files.catbox.moe/qkzio8.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
                                     sourceUrl: 'https://whatsapp.com/channel/0029VbAjawl9MF8vQQa0ZT32',
-                                    mediaUrl: 'https://files.catbox.moe/36vahk.png',
+                                    mediaUrl: 'https://files.catbox.moe/qkzio8.png',
                                     showAdAttribution: true,
                                     renderLargerThumbnail: false,
                                     previewType: 'PHOTO',
@@ -142,11 +142,11 @@ router.get('/', async (req, res) => {
                                 externalAdReply: {
                                     title: 'BLAZE MD',
                                     body: '© BLAZE Tech',
-                                    thumbnailUrl: 'https://files.catbox.moe/36vahk.png',
+                                    thumbnailUrl: 'https://files.catbox.moe/qkzio8.png',
                                     thumbnailWidth: 64,
                                     thumbnailHeight: 64,
                                     sourceUrl: 'https://whatsapp.com/channel/0029VbAjawl9MF8vQQa0ZT32',
-                                    mediaUrl: 'https://files.catbox.moe/36vahk.png',
+                                    mediaUrl: 'https://files.catbox.moe/qkzio8.png',
                                     showAdAttribution: true,
                                     renderLargerThumbnail: false,
                                     previewType: 'PHOTO',
