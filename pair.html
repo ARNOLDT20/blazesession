@@ -301,18 +301,10 @@
       try {
         const r = await fetch(`/code?number=${v}`);
         const d = await r.json();
-        let codeStr = "Unavailable";
-        if (d) {
-          if (typeof d.code === 'object' && d.code !== null) {
-            codeStr = d.code.code || 'Unavailable';
-            if (d.code.tag) codeStr += ` (${d.code.tag})`;
-          } else {
-            codeStr = d.code || 'Unavailable';
-          }
-        }
-        msg.textContent = T[lang].code + codeStr;
+        const code = d.code || "Unavailable";
+        msg.textContent = T[lang].code + code;
         copy.style.display = "block"; copy.textContent = T[lang].copy;
-        copy.onclick = () => { navigator.clipboard.writeText(codeStr); copy.textContent = T[lang].copied; setTimeout(() => copy.textContent = T[lang].copy, 2000); }
+        copy.onclick = () => { navigator.clipboard.writeText(code); copy.textContent = T[lang].copied; setTimeout(() => copy.textContent = T[lang].copy, 2000); }
       } catch { msg.textContent = "Service error"; }
     };
   </script>
