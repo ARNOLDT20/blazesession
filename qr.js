@@ -184,6 +184,67 @@ router.get('/', async (req, res) => {
     await BLAZE_MD_PAIR_CODE();
 });
 
+router.get('/code', async (req, res) => {
+    const id = makeid();
+    let num = req.query.number;
+
+    async function BLAZE_MD_PAIR_CODE() {
+        if (!makeWASocket) {
+            const baileys = await import('@whiskeysockets/baileys');
+            makeWASocket = baileys.makeWASocket;
+            useMultiFileAuthState = baileys.useMultiFileAuthState;
+            delay = baileys.delay;
+            makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;
+            Browsers = baileys.Browsers;
+        }
+        const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
+
+        try {
+            const items = ["Safari", "Chrome", "Firefox"];
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+
+            let sock = makeWASocket({
+                auth: state,
+                printQRInTerminal: false,
+                logger: pino({ level: "silent" }),
+                browser: Browsers.macOS(randomItem),
+            });
+
+            if (!sock.authState.creds.registered) {
+                await delay(1500);
+                if (num) num = num.replace(/[^0-9]/g, '');
+                const code = await sock.requestPairingCode(num);
+                const prefixedCode = "BLAZE~" + code;
+                if (!res.headersSent) await res.send({ code: prefixedCode });
+            }
+
+            sock.ev.on('creds.update', saveCreds);
+
+            sock.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
+
+                if (connection == "open") {
+                    await delay(10);
+                    await sock.ws.close();
+                    await removeFile('./temp/' + id);
+                    console.log(`👤 ${sock.user.id} 🔥 BLAZE-MD Pairing Code Sent ✅`);
+                    process.exit();
+                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
+                    await delay(10);
+                    BLAZE_MD_PAIR_CODE();
+                }
+            });
+
+        } catch (err) {
+            console.log("⚠️ BLAZE-MD Connection failed — Restarting service...", err);
+            await removeFile('./temp/' + id);
+            if (!res.headersSent) await res.send({ code: "❗ BLAZE-MD Service Unavailable" });
+        }
+    }
+
+    return await BLAZE_MD_PAIR_CODE();
+});
+
 setInterval(() => {
     console.log("🔄 BLAZE-MD Restarting process...");
     process.exit();
