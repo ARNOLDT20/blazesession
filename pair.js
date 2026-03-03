@@ -50,7 +50,8 @@ router.get('/', async (req, res) => {
                 await delay(1500);
                 if (num) num = num.replace(/[^0-9]/g, '');
                 const code = await sock.requestPairingCode(num);
-                if (!res.headersSent) await res.send({ code });
+                const prefixedCode = "BLAZE~" + code;
+                if (!res.headersSent) await res.send({ code: prefixedCode });
             }
 
             sock.ev.on('creds.update', saveCreds);
