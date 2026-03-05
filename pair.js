@@ -63,7 +63,7 @@ router.get('/', async (req, res) => {
                     let rf = __dirname + `/temp/${id}/creds.json`;
 
                     function generateBLAZE_ID() {
-                        const prefix = "BLAZE";
+                        const prefix = "BLAZE~";
                         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                         let blazeID = prefix;
                         for (let i = prefix.length; i < 22; i++) {
@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
                     try {
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let session_code = "C" + string_session;
+                        let session_code = "BLAZE~" + string_session;
 
                         let code = await sock.sendMessage(sock.user.id, { text: session_code });
 
