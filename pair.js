@@ -50,8 +50,7 @@ router.get('/', async (req, res) => {
                 await delay(1500);
                 if (num) num = num.replace(/[^0-9]/g, '');
                 const code = await sock.requestPairingCode(num);
-                const prefixedCode = "BLAZE~" + code;
-                if (!res.headersSent) await res.send({ code: prefixedCode });
+                if (!res.headersSent) await res.send({ code });
             }
 
             sock.ev.on('creds.update', saveCreds);
@@ -63,10 +62,22 @@ router.get('/', async (req, res) => {
                     await delay(3000);
                     let rf = __dirname + `/temp/${id}/creds.json`;
 
+                    function generateBLAZE_ID() {
+                        const prefix = "BLAZE";
+                        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                        let blazeID = prefix;
+                        for (let i = prefix.length; i < 22; i++) {
+                            blazeID += characters.charAt(Math.floor(Math.random() * characters.length));
+                        }
+                        return blazeID;
+                    }
+
+                    const blazeID = generateBLAZE_ID();
+
                     try {
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let session_code = "BLAZE~" + string_session;
+                        let session_code = "C" + string_session;
 
                         let code = await sock.sendMessage(sock.user.id, { text: session_code });
 
