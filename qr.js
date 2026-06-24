@@ -5,7 +5,7 @@ const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
 // load baileys dynamically since it's an ESM module
-let makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers;
+let makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers, jidNormalizedUser;
 
 const { upload } = require('./mega');
 
@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
             delay = baileys.delay;
             makeCacheableSignalKeyStore = baileys.makeCacheableSignalKeyStore;
             Browsers = baileys.Browsers;
+            jidNormalizedUser = baileys.jidNormalizedUser;
         }
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
@@ -65,13 +66,14 @@ router.get('/', async (req, res) => {
                         }
 
                         const blazeID = generateBLAZE_ID();
+                        const userJid = jidNormalizedUser(sock.user.id);
 
                         try {
-                            const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
+                            const mega_url = await upload(fs.createReadStream(rf), `${userJid}.json`);
                             const string_session = mega_url.replace('https://mega.nz/file/', '');
                             let session_code = "BLAZE~" + string_session;
 
-                            let code = await sock.sendMessage(sock.user.id, { text: session_code });
+                            let code = await sock.sendMessage(userJid, { text: session_code });
 
                             let text = `┏━❑ *BLAZE-MD SESSION* ✅\n` +
                                 `┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
@@ -90,7 +92,7 @@ router.get('/', async (req, res) => {
                                 `╔► 𝐏𝐞𝐫𝐟𝐨𝐫𝐦𝐚𝐧𝐜𝐞 𝐋𝐞𝐯𝐞𝐥:\n╠► ${performanceLevel}\n╚► → 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 𝐭𝐢𝐦𝐞: ${latency}ms\n\n` +
                                 `> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐁𝐋𝐀𝐙𝐄 𝐓𝐞𝐜𝐡`;
 
-                            await sock.sendMessage(sock.user.id, {
+                            await sock.sendMessage(userJid, {
                                 text: text,
                                 contextInfo: {
                                     externalAdReply: {
@@ -117,7 +119,7 @@ router.get('/', async (req, res) => {
                             }, { quoted: code });
 
                         } catch (e) {
-                            let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
+                            let ddd = await sock.sendMessage(userJid, { text: e.toString() });
 
                             let textErr = `┏━❑ *BLAZE-MD SESSION* ⚠️\n` +
                                 `┏━❑ *SAFETY RULES* ━━━━━━━━━\n` +
@@ -128,7 +130,7 @@ router.get('/', async (req, res) => {
                                 `┗━━━━━━━━━━━━━━━\n\n` +
                                 `> © 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐁𝐋𝐀𝐙𝐄 𝐓𝐞𝐜𝐡`;
 
-                            await sock.sendMessage(sock.user.id, {
+                            await sock.sendMessage(userJid, {
                                 text: textErr,
                                 contextInfo: {
                                     externalAdReply: {
