@@ -45,13 +45,20 @@ router.get('/', async (req, res) => {
 
 
 
+            if (!sock.authState.creds.registered) {
+                await delay(1500);
+                if (num) num = num.replace(/[^0-9]/g, '');
+                if (!num) return await res.send({ code: "❗ Phone number is required" });
+                const code = await sock.requestPairingCode(num);
+                if (!res.headersSent) await res.send({ code });
+            }
+
             sock.ev.on('creds.update', saveCreds);
 
             sock.ev.on("connection.update", async (s) => {
-                const { connection, lastDisconnect, qr } = s;
+                const { connection, lastDisconnect } = s;
 
                 try {
-                    if (qr) return await res.end(await QRCode.toBuffer(qr));
 
                     if (connection == "open") {
                     await delay(3000);
