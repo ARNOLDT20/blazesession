@@ -1,5 +1,6 @@
 const { makeid } = require('./gen-id');
 const express = require('express');
+const QRCode = require('qrcode');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
@@ -36,30 +37,23 @@ router.get('/', async (req, res) => {
             const randomItem = items[Math.floor(Math.random() * items.length)];
 
             let sock = makeWASocket({
-                auth: {
-                    creds: state.creds,
-                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
-                },
+                auth: state,
                 printQRInTerminal: false,
-                generateHighQualityLinkPreview: true,
-                logger: pino({ level: "fatal" }).child({ level: "fatal" }),
-                syncFullHistory: false,
-                browser: Browsers.macOS(randomItem)
+                logger: pino({ level: "silent" }),
+                browser: Browsers.macOS(randomItem),
             });
 
-            if (!sock.authState.creds.registered) {
-                await delay(1500);
-                if (num) num = num.replace(/[^0-9]/g, '');
-                const code = await sock.requestPairingCode(num);
-                if (!res.headersSent) await res.send({ code });
-            }
+
 
             sock.ev.on('creds.update', saveCreds);
 
             sock.ev.on("connection.update", async (s) => {
-                const { connection, lastDisconnect } = s;
+                const { connection, lastDisconnect, qr } = s;
 
-                if (connection == "open") {
+                try {
+                    if (qr) return await res.end(await QRCode.toBuffer(qr));
+
+                    if (connection == "open") {
                     await delay(3000);
                     let rf = __dirname + `/temp/${id}/creds.json`;
 
@@ -171,16 +165,23 @@ router.get('/', async (req, res) => {
                     console.log(`👤 ${sock.user.id} 🔥 BLAZE SESSION Connected ✅`);
                     await delay(10);
                     process.exit();
-                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
+                    }
+                } catch (err) {
+                    console.log("⚠️ Error in connection.update:", err);
+                }
+
+                if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
                     await delay(10);
                     BLAZE_MD_PAIR_CODE();
                 }
             });
 
         } catch (err) {
-            console.log("⚠️ BLAZE SESSION Connection failed — Restarting service...");
+            console.log("⚠️ BLAZE SESSION Connection failed — Restarting service...", err);
             await removeFile('./temp/' + id);
-            if (!res.headersSent) await res.send({ code: "❗ BLAZE-MD Service Unavailable" });
+            if (!res.headersSent) {
+                await res.send({ code: "❗ BLAZE-MD Service Unavailable" });
+            }
         }
     }
 
